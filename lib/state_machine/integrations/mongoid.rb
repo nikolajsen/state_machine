@@ -309,17 +309,8 @@ module StateMachine
           define_helper :instance, <<-end_eval, __FILE__, __LINE__ + 1
             # Initializes dynamic states
             def initialize(*)
-              super do |*args|
-                self.class.state_machines.initialize_states(self, :static => false)
-                yield(*args) if block_given?
-              end
-            end
-            
-            # Initializes static states
-            def apply_default_attributes(*)
-              result = super
-              self.class.state_machines.initialize_states(self, :dynamic => false, :to => result) if new_record?
-              result
+              @attributes = {}
+              self.class.state_machines.initialize_states(self) { super }
             end
           end_eval
         end
